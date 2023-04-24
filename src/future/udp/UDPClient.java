@@ -1,4 +1,4 @@
-package se211.udp;
+package future.udp;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;

@@ -1,4 +1,4 @@
-package se211.ui;
+package future.ui;
 
 
 import java.awt.Color;
@@ -15,8 +15,7 @@ import javax.swing.JTextField;
  *
  * @author IDEA Developers
  */
-public class ServerPanel extends JFrame implements ActionListener, MessageInterface{
-
+public class ClientPanel extends JFrame implements ActionListener, MessageInterface{
 
     private int width = 800;
     private int height = 600;
@@ -29,10 +28,10 @@ public class ServerPanel extends JFrame implements ActionListener, MessageInterf
     private JScrollPane scrollMessages;
     private JTextField inputMessage;
     private JButton sendMessageBtn;
-    private JButton startServerBtn;
+    private JButton connectServerBtn;
 
-    public ServerPanel(){
-        super("Server Panel");
+    public ClientPanel(){
+        super("Client Panel");
 
         mainPanel = new JPanel(null);
         mainPanel.setBackground(Color.BLACK);
@@ -68,12 +67,12 @@ public class ServerPanel extends JFrame implements ActionListener, MessageInterf
         bottomPanel.add(sendMessageBtn);
 
 
-        startServerBtn = new JButton("Start");
-        startServerBtn.setBackground(Color.GREEN);
-        startServerBtn.setForeground(Color.WHITE);
-        startServerBtn.setBounds(bottomPanel.getWidth() - 200, 10, 100, 30);
-        startServerBtn.addActionListener(this);
-        bottomPanel.add(startServerBtn);
+        connectServerBtn = new JButton("Connect");
+        connectServerBtn.setBackground(Color.GREEN);
+        connectServerBtn.setForeground(Color.WHITE);
+        connectServerBtn.setBounds(bottomPanel.getWidth() - 200, 10, 100, 30);
+        connectServerBtn.addActionListener(this);
+        bottomPanel.add(connectServerBtn);
 
         mainPanel.add(centerPanel);
         mainPanel.add(bottomPanel);
@@ -85,31 +84,30 @@ public class ServerPanel extends JFrame implements ActionListener, MessageInterf
     }
 
     public static void main(String[] args){
-        new ServerPanel();
+        new ClientPanel();
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if(e.getSource() == startServerBtn){
-            try {
-                Server.getInstance().startServer(this);
-            } catch (Exception ex) {
+        if(e.getSource() == connectServerBtn){
+            try{
+                Client.getInstance().connectToServer(this);
+            }catch(Exception ex){
                 System.err.println(ex.getMessage());
             }
         }
 
         if(e.getSource() == sendMessageBtn){
-            try {
-                Server.getInstance().sendMessage(inputMessage.getText());
-            } catch (Exception ex) {
+            try{
+                Client.getInstance().sendMessage(inputMessage.getText());
+            }catch(Exception ex){
                 System.err.println(ex.getMessage());
             }
         }
     }
 
-
     @Override
     public void onMessageReceived(String message) {
-        outputMessages.append("Client: " + message + "\n");
+        outputMessages.append("Server: " + message + "\n");
     }
 }

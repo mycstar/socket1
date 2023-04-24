@@ -1,4 +1,4 @@
-package se211.thread2;
+package future.thread2;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -20,6 +20,7 @@ public class ServerThread implements Runnable {
             //获取Socket的输入流，用来接收从客户端发送过来的数据
             BufferedReader buf = new BufferedReader(new InputStreamReader(client.getInputStream()));
             boolean flag =true;
+
             while(flag){
                 //接收从客户端发送过来的数据
                 String str =  buf.readLine();
@@ -28,12 +29,19 @@ public class ServerThread implements Runnable {
                 }else{
                     if("bye".equals(str)){
                         flag = false;
+                        System.out.println("Client say bye and prepare cut connect");
                     }else{
                         //将接收到的字符串前面加上echo，发送到对应的客户端
+                        System.out.println("Client say:" +str+" the meg Length:"+str.length());
+
                         out.println("echo:" + str);
+                        System.out.println("port:"+client.getPort());
+
+                        System.out.println("send back to client:"+ "echo:" +str);
                     }
                 }
             }
+
             out.close();
             client.close();
         }catch(Exception e){

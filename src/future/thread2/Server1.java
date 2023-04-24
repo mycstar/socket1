@@ -1,4 +1,4 @@
-package se211.thread2;
+package future.thread2;
 
 import java.net.ServerSocket;
 import java.net.Socket;

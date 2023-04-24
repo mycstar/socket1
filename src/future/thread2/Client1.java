@@ -1,4 +1,4 @@
-package se211.thread2;
+package future.thread2;
 
 import java.io.BufferedReader;
 import java.io.IOException;
