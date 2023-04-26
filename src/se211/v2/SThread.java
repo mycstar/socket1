@@ -16,37 +16,37 @@ public class SThread extends Thread {
         clientList = clientListI;
     }
 
+    @Override
     public void run() {
         System.out.println("connected from " + connSocket.getRemoteSocketAddress());
 
         try {
             BufferedReader inClient = new BufferedReader(new InputStreamReader(connSocket.getInputStream()));
-            PrintWriter outClient = new PrintWriter(connSocket.getOutputStream());
+            //PrintWriter outClient = new PrintWriter(connSocket.getOutputStream(), true);
 
-            boolean useQuie = false;
+            boolean userQuit = true;
 
-            while(useQuie) {
-
+            while (userQuit) {
                 clientData = inClient.readLine();
 
                 System.out.println("data length: " + clientData.length());
                 System.out.println(clientData);
                 capitalizedData = clientData.toUpperCase();
 
-                outClient.println(capitalizedData);
+                //outClient.println(capitalizedData);
 
-/*                for (Map.Entry<String, Socket> entity : clientList.entrySet()) {
+               for (Map.Entry<String, Socket> entity : clientList.entrySet()) {
 
                     String clientSocket = entity.getKey();
-                    PrintWriter individualClient = new PrintWriter(entity.getValue().getOutputStream());
+                    PrintWriter individualClient = new PrintWriter(entity.getValue().getOutputStream(),true);
                     individualClient.println(capitalizedData);
-                }*/
+                }
 
-                if(clientData.equals("quit")){
-                    useQuie = true;
+                if (clientData.equals("quit")) {
+                    userQuit = false;
                 }
             }
-            outClient.flush();
+            //outClient.close();
             inClient.close();
             connSocket.close();
 
