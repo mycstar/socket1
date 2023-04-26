@@ -19,7 +19,7 @@ public class BServer {
             Socket connSocket = serverS.accept();
             System.out.println("Connection number:"+ connNum);
             clientList.put(String.valueOf(connSocket.getPort()), connSocket);
-
+            connNum++;
             SThread a = new SThread(connSocket, clientList);
             a.start();
         }
