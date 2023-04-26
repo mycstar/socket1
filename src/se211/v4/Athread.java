@@ -22,21 +22,22 @@ public class Athread extends Thread {
         try {
 
             BufferedReader inClient = new BufferedReader(new InputStreamReader(connSocket.getInputStream()));
-            PrintWriter outClient = new PrintWriter(connSocket.getOutputStream(),true);
+            PrintWriter outClient = new PrintWriter(connSocket.getOutputStream(), true);
 
             boolean clientQuit = false;
-            while(!clientQuit) {
+            while (!clientQuit) {
                 String clientData = inClient.readLine();
 
-                if(clientData.equals("quit")){
+                if (clientData.equals("quit")) {
                     clientQuit = true;
-                }else {
-                    System.out.println("data length: " + clientData.length());
-                    System.out.println(clientData);
-                    capitalizedData = clientData.toUpperCase();
 
-                    outClient.println(capitalizedData);
                 }
+                System.out.println("data length: " + clientData.length());
+                System.out.println(clientData);
+                capitalizedData = clientData.toUpperCase();
+
+                outClient.println(capitalizedData);
+
             }
 
         } catch (IOException e) {
