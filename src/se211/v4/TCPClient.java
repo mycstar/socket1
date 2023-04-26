@@ -19,13 +19,13 @@ public class TCPClient {
 
         Socket clientSocket = new Socket("localhost", 6789);
 
-        PrintStream outToServer = new PrintStream(clientSocket.getOutputStream());
+        PrintStream outToServer = new PrintStream(clientSocket.getOutputStream(),true);
         BufferedReader inFromServer = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
 
         boolean endChat = false;
         while(!endChat) {
-            String data = inFromUser.readLine();
-           // String data = scn.nextLine();
+            //String data = inFromUser.readLine();
+            String data = scn.nextLine();
             System.out.println("the length:" + data.length() + " " + data);
 
             // outToServer.writeBytes(data + '\n');
@@ -34,6 +34,7 @@ public class TCPClient {
             editedData = inFromServer.readLine();
 
             System.out.println("Server reply: " + editedData);
+
             if(data.equals("quit")){
                 endChat = true;
             }
