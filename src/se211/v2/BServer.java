@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class BServer {
 
@@ -11,7 +12,7 @@ public class BServer {
 
         ServerSocket serverS = new ServerSocket(6789);
         System.out.println("server is running...");
-        HashMap<String, Socket> clientList = new HashMap<>();
+        ConcurrentHashMap<String, Socket> clientList = new ConcurrentHashMap<>();
 
         int connNum = 0;
         while (true) {

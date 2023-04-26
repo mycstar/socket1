@@ -4,14 +4,15 @@ import java.io.*;
 import java.net.Socket;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class SThread extends Thread {
     Socket connSocket;
     String clientData;
     String capitalizedData;
-    HashMap<String, Socket> clientList;
+    ConcurrentHashMap<String, Socket> clientList;
 
-    public SThread(Socket clientS, HashMap<String, Socket> clientListI) {
+    public SThread(Socket clientS, ConcurrentHashMap<String, Socket> clientListI) {
         connSocket = clientS;
         clientList = clientListI;
     }
