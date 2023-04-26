@@ -28,13 +28,21 @@ public class TCPServer {
             DataOutputStream outClient = new DataOutputStream(connSocket.getOutputStream());
 
             clientData = inClient.readLine();
+            int inCh;
+            char[] inChAr = new char[64];
+            while((inCh = inClient.read(inChAr))!=-1){
 
-            System.out.println("data length: " + clientData.length());
-            System.out.println(clientData);
+                String inStr = inChAr.toString();
+                System.out.println("data length: " + inChAr.length);
+                System.out.println(clientData);
 
-            capitalizedData = clientData.toUpperCase() + System.lineSeparator();
+                capitalizedData = clientData.toUpperCase() + System.lineSeparator();
 
-            outClient.writeBytes(capitalizedData);
+                outClient.writeBytes(capitalizedData);
+
+            }
+
+
         }
     }
 }

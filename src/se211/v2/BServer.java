@@ -1,4 +1,4 @@
-package se211.V2;
+package se211.v2;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -8,7 +8,7 @@ public class BServer {
 
     public static void main(String[] args) throws IOException {
 
-        ServerSocket serverS = new ServerSocket(9876);
+        ServerSocket serverS = new ServerSocket(6789);
         System.out.println("server is running...");
         int connNum = 0;
         while (true) {

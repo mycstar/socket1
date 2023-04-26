@@ -1,7 +1,6 @@
-package se211.v1;
+package se211.v2;
 
 import java.io.BufferedReader;
-import java.io.DataOutputStream;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.net.Socket;
@@ -36,9 +35,15 @@ public class TCPClient {
             editedData = inFromServer.readLine();
 
             System.out.println("Server reply: " + editedData);
+            if(data.equals("quit")){
+                endChat = true;
+            }
 
         }
         clientSocket.close();
+        inFromServer.close();
+        outToServer.close();
+
     }
 
 }

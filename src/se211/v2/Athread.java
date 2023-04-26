@@ -1,11 +1,10 @@
-package se211.V2;
+package se211.v2;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
-import java.util.Random;
 
 public class Athread extends Thread {
     Socket connSocket;
