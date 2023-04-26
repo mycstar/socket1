@@ -17,11 +17,13 @@ public class CThread extends Thread {
     public void run() {
         try {
 
-            BufferedReader inFromServer = new BufferedReader(new InputStreamReader(connSocket.getInputStream()));
-            String editedData = null;
+            while(true) {
+                BufferedReader inFromServer = new BufferedReader(new InputStreamReader(connSocket.getInputStream()));
+                String editedData = null;
 
-            editedData = inFromServer.readLine();
-            System.out.println("Server reply: " + editedData);
+                editedData = inFromServer.readLine();
+                System.out.println("Server reply: " + editedData);
+            }
 
         } catch (IOException e) {
             throw new RuntimeException(e);
