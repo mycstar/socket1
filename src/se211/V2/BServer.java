@@ -7,19 +7,15 @@ import java.net.Socket;
 public class BServer {
 
     public static void main(String[] args) throws IOException {
-/*
-        Athread a = new Athread("Monday");
-        a.start ();
-        Athread b = new Athread("Tuesday");
-        b.start ();
-*/
-        //Monitor a specify port
-        ServerSocket serverS = new ServerSocket(6789);
+
+        ServerSocket serverS = new ServerSocket(9876);
         System.out.println("server is running...");
+        int connNum = 0;
         while (true) {
             Socket connSocket = serverS.accept();
-           Athread a = new Athread(connSocket);
-           a.start();
+            System.out.println("Connection number:"+ connNum);
+            Athread a = new Athread(connSocket);
+            a.start();
         }
     }
 }

@@ -11,9 +11,11 @@ public class Athread extends Thread {
     Socket connSocket;
     String clientData;
     String capitalizedData;
+
     public Athread(Socket clientS) {
         connSocket = clientS;
     }
+
     public void run() {
         System.out.println("connected from " + connSocket.getRemoteSocketAddress());
 
