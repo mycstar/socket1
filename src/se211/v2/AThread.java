@@ -2,18 +2,17 @@ package se211.v2;
 
 import java.io.*;
 import java.net.Socket;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class SThread extends Thread {
+public class AThread extends Thread {
     Socket connSocket;
     String clientData;
     String capitalizedData;
     int clientNum;
     ConcurrentHashMap<Integer, Socket> clientList;
 
-    public SThread(int clientnumi, Socket clientS, ConcurrentHashMap<Integer, Socket> clientListI) {
+    public AThread(int clientnumi, Socket clientS, ConcurrentHashMap<Integer, Socket> clientListI) {
         connSocket = clientS;
         clientNum = clientnumi;
         clientList = clientListI;
