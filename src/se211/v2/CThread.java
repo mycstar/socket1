@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class CThread extends Thread {
@@ -11,22 +12,23 @@ public class CThread extends Thread {
 
     public CThread(Socket clientS) {
         connSocket = clientS;
-
     }
 
     public void run() {
         try {
-
-            while(true) {
+            while(!connSocket.isClosed()) {
                 BufferedReader inFromServer = new BufferedReader(new InputStreamReader(connSocket.getInputStream()));
                 String editedData = null;
 
                 editedData = inFromServer.readLine();
-                System.out.println("Server reply: " + editedData);
+                System.out.println(editedData);
             }
 
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        } catch (SocketException e) {
+            System.out.println("client quit");
+        } catch (IOException exception) {
+            System.out.println(exception);
         }
     }
+
 }

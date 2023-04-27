@@ -26,7 +26,7 @@ public class TCPClient {
 
         while(!endChat) {
             data = scn.nextLine();
-            System.out.println("the length:" + data.length() + " " + data);
+            //System.out.println("the length:" + data.length() + " " + data);
 
             outToServer.println(data);
 
@@ -40,6 +40,7 @@ public class TCPClient {
         clientSocket.close();
         inFromServer.close();
         outToServer.close();
+
 
     }
 
