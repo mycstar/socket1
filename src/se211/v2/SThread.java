@@ -10,10 +10,12 @@ public class SThread extends Thread {
     Socket connSocket;
     String clientData;
     String capitalizedData;
-    ConcurrentHashMap<String, Socket> clientList;
+    int clientNum;
+    ConcurrentHashMap<Integer, Socket> clientList;
 
-    public SThread(Socket clientS, ConcurrentHashMap<String, Socket> clientListI) {
+    public SThread(int clientnumi, Socket clientS, ConcurrentHashMap<Integer, Socket> clientListI) {
         connSocket = clientS;
+        clientNum = clientnumi;
         clientList = clientListI;
     }
 
@@ -32,22 +34,32 @@ public class SThread extends Thread {
 
                 System.out.println("data length: " + clientData.length());
                 System.out.println(clientData);
-                capitalizedData = clientData.toUpperCase();
-
+                //capitalizedData = clientData.toUpperCase();
+                capitalizedData = "Client " + clientNum +" say: "+ clientData;
                 //outClient.println(capitalizedData);
-
-               for (Map.Entry<String, Socket> entity : clientList.entrySet()) {
-
-                    String clientSocket = entity.getKey();
-                    PrintWriter individualClient = new PrintWriter(entity.getValue().getOutputStream(),true);
-                    individualClient.println(capitalizedData);
-                }
 
                 if (clientData.equals("quit")) {
                     userQuit = false;
+                } else {
+                    System.out.println("total client  : " + clientList.values().size());
+                    for (Map.Entry<Integer, Socket> entity : clientList.entrySet()) {
+
+                        int clientNumL = entity.getKey();
+                        System.out.println("try to response to : " + clientNumL);
+                        Socket clientSocket = entity.getValue();
+                        if(clientSocket.isClosed()){
+                            System.out.println(clientNumL + " closed, move to next one" );
+                        }else {
+                            PrintWriter individualClient = new PrintWriter(entity.getValue().getOutputStream(), true);
+                            individualClient.println(capitalizedData);
+                        }
+                    }
                 }
             }
             //outClient.close();
+            System.out.println("client " + clientNum + " exit!");
+            clientList.remove(clientNum);
+            System.out.println("total client after clean : " + clientList.values().size());
             inClient.close();
             connSocket.close();
 
