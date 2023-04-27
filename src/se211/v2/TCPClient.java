@@ -37,7 +37,6 @@ public class TCPClient {
                 endChat = true;
             }
         }
-        cthread.exit();
         clientSocket.close();
         inFromServer.close();
         outToServer.close();
