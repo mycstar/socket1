@@ -8,16 +8,16 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class CThread extends Thread {
     Socket connSocket;
+    boolean socketClose = false;
 
     public CThread(Socket clientS) {
         connSocket = clientS;
-
     }
 
     public void run() {
         try {
 
-            while(true) {
+            while(!socketClose) {
                 BufferedReader inFromServer = new BufferedReader(new InputStreamReader(connSocket.getInputStream()));
                 String editedData = null;
 
@@ -30,4 +30,7 @@ public class CThread extends Thread {
         }
     }
 
+    public void exit(){
+        socketClose = true;
+    }
 }

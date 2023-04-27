@@ -40,7 +40,7 @@ public class TCPClient {
         clientSocket.close();
         inFromServer.close();
         outToServer.close();
-        cthread.stop();
+        cthread.exit();
 
     }
 
