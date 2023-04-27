@@ -16,7 +16,6 @@ public class CThread extends Thread {
 
     public void run() {
         try {
-
             while(!socketClose) {
                 BufferedReader inFromServer = new BufferedReader(new InputStreamReader(connSocket.getInputStream()));
                 String editedData = null;
