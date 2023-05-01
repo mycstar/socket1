@@ -45,7 +45,7 @@ public class BServer5 {
             clientNameMeg.setSender("Server");
             sendToAll(clientOutputList, clientNameMeg);
 
-            SThread5 a = new SThread5(clientName, connSocket, clientList, clientInputList, in, clientOutputList, out);
+            SThread5 a = new SThread5(clientNameList,clientName, connSocket, clientList, clientInputList, in, clientOutputList, out);
             a.start();
             connNum++;
             System.out.println("Total client number: " + connNum);
@@ -53,7 +53,7 @@ public class BServer5 {
     }
 
     private static void sendToAll(List<ObjectOutputStream> clientList, ChatMessage meg) throws IOException {
-        System.out.println("send reminder to clients:" + clientList.size());
+        System.out.println("send reminder to clients:" + clientList.size()+ " "+meg.getMessage() );
         for (ObjectOutputStream entity : clientList) {
 
 //            String clientName = entity.getKey();

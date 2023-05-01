@@ -1,15 +1,15 @@
 package se211.v5;
 
 import java.io.*;
-import java.lang.reflect.Array;
 import java.net.Socket;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class SThread5 extends Thread {
     Socket connSocket;
     String clientData;
     String capitalizedData;
+
+    List<String> nameList;
     List<Socket> clientList;
     String nickName;
 
@@ -18,7 +18,8 @@ public class SThread5 extends Thread {
     List< ObjectInputStream> clientInputList;
     ObjectInputStream inputStream;
 
-    public SThread5(String nickName1, Socket clientS, List< Socket> clientListI, List<ObjectInputStream> clientInputList1, ObjectInputStream inputStream1, List<ObjectOutputStream> clientOutputList1, ObjectOutputStream out1) {
+    public SThread5(List<String> clientNameList, String nickName1, Socket clientS, List< Socket> clientListI, List<ObjectInputStream> clientInputList1, ObjectInputStream inputStream1, List<ObjectOutputStream> clientOutputList1, ObjectOutputStream out1) {
+        nameList = clientNameList;
         nickName = nickName1;
         connSocket = clientS;
         clientList = clientListI;
@@ -50,6 +51,7 @@ public class SThread5 extends Thread {
 
                     userQuit = false;
 
+                    nameList.remove(nickName);
                     clientOutputList.remove(out);
                     clientList.remove(connSocket);
                     clientInputList.remove(inputStream);
@@ -74,6 +76,7 @@ public class SThread5 extends Thread {
 
         } catch (IOException | ClassNotFoundException e) {
 
+            nameList.remove(nickName);
             clientOutputList.remove(out);
             clientList.remove(connSocket);
             clientInputList.remove(inputStream);

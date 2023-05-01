@@ -117,7 +117,7 @@ public class ChatRoomGui6 extends JFrame implements ActionListener {
         boolean isFirst = true;
         for (String nickname : connectedClients) {
             if (isFirst) {
-
+                isFirst = false;
             } else {
                 connectedClients.remove(nickname);
                 Component[] components = clientsPanel.getComponents();
