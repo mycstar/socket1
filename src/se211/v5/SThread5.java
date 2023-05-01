@@ -1,26 +1,31 @@
 package se211.v5;
 
 import java.io.*;
+import java.lang.reflect.Array;
 import java.net.Socket;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class SThread5 extends Thread {
     Socket connSocket;
     String clientData;
     String capitalizedData;
-    ConcurrentHashMap<String, Socket> clientList;
+    List<Socket> clientList;
     String nickName;
 
-    ConcurrentHashMap<String, ObjectOutputStream> clientOutputList;
+    List<ObjectOutputStream> clientOutputList;
+    ObjectOutputStream out;
+    List< ObjectInputStream> clientInputList;
     ObjectInputStream inputStream;
 
-    public SThread5(String nickName1, Socket clientS, ConcurrentHashMap<String, Socket> clientListI, ObjectInputStream inputStream1, ConcurrentHashMap<String, ObjectOutputStream> clientOutputList1) {
+    public SThread5(String nickName1, Socket clientS, List< Socket> clientListI, List<ObjectInputStream> clientInputList1, ObjectInputStream inputStream1, List<ObjectOutputStream> clientOutputList1, ObjectOutputStream out1) {
         nickName = nickName1;
         connSocket = clientS;
         clientList = clientListI;
+        clientInputList = clientInputList1;
         inputStream = inputStream1;
         clientOutputList = clientOutputList1;
+        out=out1;
     }
 
     @Override
@@ -41,15 +46,23 @@ public class SThread5 extends Thread {
 
                 String outMeg = nickName + ":" + clientData;
                 //outClient.println(capitalizedData);
+                if(inMeg.getType()==2){
 
-                ChatMessage meg = new ChatMessage(0, outMeg);
-                sendToAll(clientOutputList, meg);
- /*              for (Map.Entry<String, Socket> entity : clientList.entrySet()) {
+                    userQuit = false;
 
-                    String clientName = entity.getKey();
-                    PrintWriter individualClient = new PrintWriter(entity.getValue().getOutputStream(),true);
-                    individualClient.println(clientName+":"+clientData);
-                }*/
+                    clientOutputList.remove(out);
+                    clientList.remove(connSocket);
+                    clientInputList.remove(inputStream);
+
+                    out.close();
+                    inputStream.close();
+                    connSocket.close();
+
+                }else{
+
+                    ChatMessage meg = new ChatMessage(0, outMeg);
+                    sendToAll(clientOutputList, meg);
+                }
 
                 if (clientData.equals("quit")) {
                     userQuit = false;
@@ -60,30 +73,30 @@ public class SThread5 extends Thread {
             connSocket.close();
 
         } catch (IOException | ClassNotFoundException e) {
-            throw new RuntimeException(e);
+
+            clientOutputList.remove(out);
+            clientList.remove(connSocket);
+            clientInputList.remove(inputStream);
+
+            System.out.println( nickName+ " thread error:" + e.getMessage());
+        }finally {
+
+            System.out.println(  " hashmap adapted:"+nickName);
         }
     }
-    private void sendToAll(ConcurrentHashMap<String, ObjectOutputStream> clientList, ChatMessage meg) throws IOException {
-        for (Map.Entry<String, ObjectOutputStream> entity : clientList.entrySet()) {
+    private void sendToAll(List< ObjectOutputStream> clientList, ChatMessage meg) throws IOException {
+        for (ObjectOutputStream entity : clientList) {
 
-            String clientName = entity.getKey();
-            System.out.println("send to client: "+ meg.getMessage());
+//            String clientName = entity.getKey();
+//            System.out.println("send to client: "+ meg.getMessage());
 
-            ObjectOutputStream individualClient = entity.getValue();
+            ObjectOutputStream individualClient = entity;
 
             individualClient.writeObject(meg);
             //individualClient.flush();
         }
     }
 
-/*    private static void sendToAll(ConcurrentHashMap<String, Socket> clientList, ChatMessage meg) throws IOException {
-        for (Map.Entry<String, Socket> entity : clientList.entrySet()) {
-
-            String clientName = entity.getKey();
-            ObjectOutputStream individualClient = new ObjectOutputStream(entity.getValue().getOutputStream());
-            individualClient.writeObject(meg);
-        }
-    }*/
 }
 
 

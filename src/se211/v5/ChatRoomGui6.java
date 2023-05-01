@@ -4,6 +4,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -58,6 +60,25 @@ public class ChatRoomGui6 extends JFrame implements ActionListener {
         container.add(chatScrollPane, BorderLayout.CENTER);
         container.add(messagePanel, BorderLayout.SOUTH);
         container.add(clientsPanel, BorderLayout.EAST);
+
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                super.windowClosing(e);
+
+                System.out.println("window close");
+                String message ="exit";
+                ChatMessage meg = new ChatMessage(2, message);
+                try {
+                    outToServer.writeObject(meg);
+
+                } catch (IOException e1) {
+                    throw new RuntimeException(e1);
+                }
+
+                System.exit(0);
+            }
+        });
     }
 
     public void updateChat(String message) {
@@ -87,7 +108,7 @@ public class ChatRoomGui6 extends JFrame implements ActionListener {
 
     public void addClient(String clientName) {
         connectedClients.add(clientName);
-        clientsPanel.add(new JLabel(clientName));
+        clientsPanel.add(new JLabel("You:"+clientName));
         clientsPanel.revalidate();
         clientsPanel.repaint();
     }
@@ -164,6 +185,7 @@ public class ChatRoomGui6 extends JFrame implements ActionListener {
 
         ChatMessage meg = new ChatMessage(1, nickName);
         meg.setSender(nickName);
+        System.out.println(nickName+" connected");
 
         outToServer.writeObject(meg);
 
