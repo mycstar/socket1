@@ -26,7 +26,7 @@ public class TCPClient5 {
         Socket clientSocket = new Socket("localhost", 6789);
 
         ObjectOutputStream outToServer = new ObjectOutputStream(clientSocket.getOutputStream());
-        BufferedReader inFromServer = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+        ObjectInputStream inFromServer = new ObjectInputStream(clientSocket.getInputStream());
 
         ChatMessage meg = new ChatMessage(ChatMessage.USERNAME,nickName);
         meg.setSender(nickName);
@@ -54,8 +54,10 @@ public class TCPClient5 {
         outToServer.close();
     }
 
-    private List<String> getClientsList(BufferedReader inFromServer) throws IOException {
-        String clientStr = inFromServer.readLine();
+    private List<String> getClientsList(ObjectInputStream inFromServer) throws IOException, ClassNotFoundException {
+        Object obj = inFromServer.readObject();
+        ChatMessage meg = (ChatMessage)obj;
+        String clientStr = meg.getMessage();
         ArrayList<String> clientList = new ArrayList<>();
         String[] retArr = clientStr.split(",");
         for (String nickName : retArr) {
