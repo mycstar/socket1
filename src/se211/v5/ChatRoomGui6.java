@@ -4,9 +4,14 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.Scanner;
 
 public class ChatRoomGui6 extends JFrame implements ActionListener {
 
@@ -16,6 +21,8 @@ public class ChatRoomGui6 extends JFrame implements ActionListener {
     private static JPanel clientsPanel;
     private static ArrayList<String> connectedClients;
     private static String clientName;
+
+    static ObjectOutputStream outToServer;
 
     public ChatRoomGui6() {
         setTitle("Chat Room");
@@ -52,7 +59,7 @@ public class ChatRoomGui6 extends JFrame implements ActionListener {
         container.add(clientsPanel, BorderLayout.EAST);
     }
 
-    public void updateChat( String message) {
+    public void updateChat(String message) {
 
         chatArea.append(message + "\n");
     }
@@ -62,6 +69,18 @@ public class ChatRoomGui6 extends JFrame implements ActionListener {
             String message = messageField.getText();
             chatArea.append("You: " + message + "\n");
             messageField.setText("");
+            sendToSever(message);
+        }
+    }
+
+    private void sendToSever(String message) {
+
+        ChatMessage meg = new ChatMessage(0, message);
+        try {
+            outToServer.writeObject(meg);
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -72,12 +91,12 @@ public class ChatRoomGui6 extends JFrame implements ActionListener {
         clientsPanel.repaint();
     }
 
-    public static void updateClients(List<String> clientList){
+    public static void updateClients(List<String> clientList) {
         boolean isFirst = true;
-        for (String nickname:connectedClients) {
-            if(isFirst){
+        for (String nickname : connectedClients) {
+            if (isFirst) {
 
-            }else {
+            } else {
                 connectedClients.remove(nickname);
                 Component[] components = clientsPanel.getComponents();
                 for (Component component : components) {
@@ -90,8 +109,8 @@ public class ChatRoomGui6 extends JFrame implements ActionListener {
             }
         }
 
-        for (String nickname:clientList) {
-            if(!nickname.equals(clientName)) {
+        for (String nickname : clientList) {
+            if (!nickname.equals(clientName)) {
                 connectedClients.add(nickname);
                 clientsPanel.add(new JLabel(nickname));
             }
@@ -100,6 +119,7 @@ public class ChatRoomGui6 extends JFrame implements ActionListener {
         clientsPanel.repaint();
 
     }
+
     public void removeClient(String clientName) {
         connectedClients.remove(clientName);
         Component[] components = clientsPanel.getComponents();
@@ -125,14 +145,61 @@ public class ChatRoomGui6 extends JFrame implements ActionListener {
             chatRoom.setVisible(true);
             chatRoom.addClient(clientName);
 
-            TCPClient5 megClient = new TCPClient5();
-            megClient.chat(clientName, chatRoom);
+            chat(clientName, chatRoom);
 
-        }catch(Exception ex){
+        } catch (Exception ex) {
             ex.printStackTrace();
         }
     }
 
+    public static void chat(String nickName, ChatRoomGui6 chatRoom) throws Exception {
+
+        String data;
+        String editedData;
+        Scanner scn = new Scanner(System.in);
+        Socket clientSocket = new Socket("localhost", 6789);
+
+        outToServer = new ObjectOutputStream(clientSocket.getOutputStream());
+
+        ChatMessage meg = new ChatMessage(1, nickName);
+        meg.setSender(nickName);
+
+        outToServer.writeObject(meg);
+
+        ObjectInputStream inFromServer = new ObjectInputStream(clientSocket.getInputStream());
+        List<String> clientList = getClientsList(inFromServer);
+        updateClients(clientList);
+
+        boolean endChat = false;
+
+        CThread5 cthread = new CThread5(clientSocket, chatRoom);
+        cthread.start();
+
+//        while (!endChat) {
+//            data = scn.nextLine();
+//            outToServer.writeObject(data);
+//
+//            if (data.equals("quit")) {
+//                endChat = true;
+//            }
+//        }
+
+/*        clientSocket.close();
+        inFromServer.close();
+        outToServer.close();*/
+    }
+
+    private static List<String> getClientsList(ObjectInputStream inFromServer) throws IOException, ClassNotFoundException {
+        Object obj = inFromServer.readObject();
+        ChatMessage meg = (ChatMessage) obj;
+        String clientStr = meg.getMessage();
+        ArrayList<String> clientList = new ArrayList<>();
+        String[] retArr = clientStr.split(",");
+        for (String nickName : retArr) {
+            clientList.add(nickName);
+        }
+        return clientList;
+    }
 
 
 }

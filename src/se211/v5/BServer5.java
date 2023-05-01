@@ -57,9 +57,14 @@ public class BServer5 {
         for (Map.Entry<String, Socket> entity : clientList.entrySet()
              ) {
             clientsStr.append(entity.getKey());
+            clientsStr.append(",");
+        }
+        if(clientsStr.substring(clientsStr.length()-1).equals(",")) {
+            clientsStr.deleteCharAt(clientsStr.length()-1);
         }
 
         ChatMessage retMeg = new ChatMessage(1,clientsStr.toString());
+
        return retMeg;
     }
 }

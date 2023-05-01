@@ -11,17 +11,19 @@ import java.util.List;
 public class CThread5 extends Thread {
     Socket connSocket;
     ChatRoomGui6 chatRoom;
+    ObjectInputStream inFromServer;
 
-    public CThread5(Socket clientS, ChatRoomGui6 chatRoom1) {
+    public CThread5(Socket clientS, ChatRoomGui6 chatRoom1, ObjectInputStream inFromServer1) {
         connSocket = clientS;
         chatRoom = chatRoom1;
+        inFromServer = inFromServer1;
 
     }
 
     public void run() {
         try {
             while(!connSocket.isClosed()) {
-                ObjectInputStream inFromServer = new ObjectInputStream(connSocket.getInputStream());
+                 inFromServer = new ObjectInputStream(connSocket.getInputStream());
                 String editedData = null;
 
                 ChatMessage reObj = (ChatMessage)inFromServer.readObject();
