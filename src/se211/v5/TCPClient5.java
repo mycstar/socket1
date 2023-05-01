@@ -1,9 +1,6 @@
 package se211.v5;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,21 +25,25 @@ public class TCPClient5 {
         Scanner scn = new Scanner(System.in);
         Socket clientSocket = new Socket("localhost", 6789);
 
-        PrintWriter outToServer = new PrintWriter(clientSocket.getOutputStream(), true);
+        ObjectOutputStream outToServer = new ObjectOutputStream(clientSocket.getOutputStream());
         BufferedReader inFromServer = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
 
-        outToServer.println(nickName);
+        ChatMessage meg = new ChatMessage(ChatMessage.USERNAME,nickName);
+        meg.setSender(nickName);
+
+        outToServer.writeObject(meg);
+
         clientList = getClientsList(inFromServer);
         chatRoom.updateClients(clientList);
 
         boolean endChat = false;
 
-        CThread5 cthread = new CThread5(clientSocket);
+        CThread5 cthread = new CThread5(clientSocket, chatRoom);
         cthread.start();
 
         while (!endChat) {
             data = scn.nextLine();
-            outToServer.println(data);
+            outToServer.writeObject(data);
 
             if (data.equals("quit")) {
                 endChat = true;

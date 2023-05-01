@@ -1,9 +1,6 @@
 package se211.v5;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.Socket;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -38,14 +35,16 @@ public class SThread5 extends Thread {
                 System.out.println(nickName+":"+ clientData);
                 capitalizedData = clientData.toUpperCase();
 
+                String outMeg = nickName+":"+ clientData;
                 //outClient.println(capitalizedData);
-
-               for (Map.Entry<String, Socket> entity : clientList.entrySet()) {
+                ChatMessage meg = new ChatMessage(ChatMessage.MESSAGE, outMeg);
+                sendToAll(clientList,meg);
+ /*              for (Map.Entry<String, Socket> entity : clientList.entrySet()) {
 
                     String clientName = entity.getKey();
                     PrintWriter individualClient = new PrintWriter(entity.getValue().getOutputStream(),true);
                     individualClient.println(clientName+":"+clientData);
-                }
+                }*/
 
                 if (clientData.equals("quit")) {
                     userQuit = false;
@@ -57,6 +56,15 @@ public class SThread5 extends Thread {
 
         } catch (IOException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    private static void sendToAll(ConcurrentHashMap<String, Socket> clientList, ChatMessage meg) throws IOException {
+        for (Map.Entry<String, Socket> entity : clientList.entrySet()) {
+
+            String clientName = entity.getKey();
+            ObjectOutputStream individualClient = new ObjectOutputStream(entity.getValue().getOutputStream());
+            individualClient.writeObject(meg);
         }
     }
 }

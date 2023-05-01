@@ -9,7 +9,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class BServer5 {
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, ClassNotFoundException {
 
         ServerSocket serverS = new ServerSocket(6789);
         System.out.println("server is running...");
@@ -21,17 +21,16 @@ public class BServer5 {
             System.out.println("Connection number:"+ connNum);
             //clientList.put(String.valueOf(connSocket.getPort()), connSocket);
 
-            BufferedReader in = new BufferedReader(new InputStreamReader(connSocket.getInputStream()));
-            PrintWriter out = new PrintWriter(connSocket.getOutputStream(),true);
+            ObjectInputStream in = new ObjectInputStream(connSocket.getInputStream());
+            ObjectOutputStream out = new ObjectOutputStream(connSocket.getOutputStream());
 
+            ChatMessage clientMeg = (ChatMessage) in.readObject();
+            String clientName = clientMeg.getSender();
+            System.out.println(clientMeg.getSender() +" connected");
 
-            String clientName = in.readLine();
-            System.out.println(clientName +" connected");
-
-
-            // send list of connected clients to new client
-            String clientNamesStr = getClientNames(clientList);
-            out.println(clientNamesStr);
+            // reminder all connected clients
+            ChatMessage clientNamesStr = getClientNames(clientList);
+            sendToAll(clientList,clientNamesStr);
 
             // add new client to HashMap
             clientList.put(clientName, connSocket);
@@ -43,13 +42,22 @@ public class BServer5 {
         }
     }
 
-    private static String getClientNames(ConcurrentHashMap<String, Socket> clientList) {
+    private static void sendToAll(ConcurrentHashMap<String, Socket> clientList, ChatMessage meg) throws IOException {
+        for (Map.Entry<String, Socket> entity : clientList.entrySet()) {
+
+            String clientName = entity.getKey();
+            ObjectOutputStream individualClient = new ObjectOutputStream(entity.getValue().getOutputStream());
+            individualClient.writeObject(meg);
+        }
+    }
+    private static ChatMessage getClientNames(ConcurrentHashMap<String, Socket> clientList) {
         StringBuffer clientsStr = new StringBuffer();
         for (Map.Entry<String, Socket> entity : clientList.entrySet()
              ) {
             clientsStr.append(entity.getKey());
         }
 
-       return clientsStr.toString();
+        ChatMessage retMeg = new ChatMessage(ChatMessage.USERNAME,clientsStr.toString());
+       return retMeg;
     }
 }

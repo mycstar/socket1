@@ -15,6 +15,7 @@ public class ChatRoomGui6 extends JFrame implements ActionListener {
     private JButton sendButton;
     private static JPanel clientsPanel;
     private static ArrayList<String> connectedClients;
+    private static String clientName;
 
     public ChatRoomGui6() {
         setTitle("Chat Room");
@@ -51,6 +52,11 @@ public class ChatRoomGui6 extends JFrame implements ActionListener {
         container.add(clientsPanel, BorderLayout.EAST);
     }
 
+    public void updateChat( String message) {
+
+        chatArea.append(message + "\n");
+    }
+
     public void actionPerformed(ActionEvent event) {
         if (event.getSource() == sendButton) {
             String message = messageField.getText();
@@ -85,8 +91,10 @@ public class ChatRoomGui6 extends JFrame implements ActionListener {
         }
 
         for (String nickname:clientList) {
-            connectedClients.add(nickname);
-            clientsPanel.add(new JLabel(nickname));
+            if(!nickname.equals(clientName)) {
+                connectedClients.add(nickname);
+                clientsPanel.add(new JLabel(nickname));
+            }
         }
         clientsPanel.revalidate();
         clientsPanel.repaint();
@@ -109,7 +117,7 @@ public class ChatRoomGui6 extends JFrame implements ActionListener {
     public static void main(String[] args) {
         Random rand = new Random();
         int randomNum = rand.nextInt(100);
-        String clientName = "client" + randomNum;
+        clientName = "client" + randomNum;
 
         try {
 
