@@ -37,7 +37,7 @@ public class SThread5 extends Thread {
 
                 String outMeg = nickName+":"+ clientData;
                 //outClient.println(capitalizedData);
-                ChatMessage meg = new ChatMessage(ChatMessage.MESSAGE, outMeg);
+                ChatMessage meg = new ChatMessage(0, outMeg);
                 sendToAll(clientList,meg);
  /*              for (Map.Entry<String, Socket> entity : clientList.entrySet()) {
 

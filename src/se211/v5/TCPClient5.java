@@ -26,13 +26,14 @@ public class TCPClient5 {
         Socket clientSocket = new Socket("localhost", 6789);
 
         ObjectOutputStream outToServer = new ObjectOutputStream(clientSocket.getOutputStream());
-        ObjectInputStream inFromServer = new ObjectInputStream(clientSocket.getInputStream());
 
-        ChatMessage meg = new ChatMessage(ChatMessage.USERNAME,nickName);
+
+        ChatMessage meg = new ChatMessage(1,nickName);
         meg.setSender(nickName);
 
         outToServer.writeObject(meg);
 
+        ObjectInputStream inFromServer = new ObjectInputStream(clientSocket.getInputStream());
         clientList = getClientsList(inFromServer);
         chatRoom.updateClients(clientList);
 

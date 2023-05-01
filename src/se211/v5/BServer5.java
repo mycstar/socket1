@@ -22,7 +22,7 @@ public class BServer5 {
             //clientList.put(String.valueOf(connSocket.getPort()), connSocket);
 
             ObjectInputStream in = new ObjectInputStream(connSocket.getInputStream());
-            ObjectOutputStream out = new ObjectOutputStream(connSocket.getOutputStream());
+            //ObjectOutputStream out = new ObjectOutputStream(connSocket.getOutputStream());
 
             ChatMessage clientMeg = (ChatMessage) in.readObject();
             String clientName = clientMeg.getSender();
@@ -33,6 +33,7 @@ public class BServer5 {
 
             // reminder all connected clients
             ChatMessage clientNameMeg = getClientNames(clientList);
+            clientNameMeg.setSender("Server");
             sendToAll(clientList,clientNameMeg);
 
             SThread5 a = new SThread5(clientName, connSocket, clientList);
@@ -48,7 +49,7 @@ public class BServer5 {
             String clientName = entity.getKey();
             ObjectOutputStream individualClient = new ObjectOutputStream(entity.getValue().getOutputStream());
             individualClient.writeObject(meg);
-            individualClient.flush();
+            //individualClient.flush();
         }
     }
     private static ChatMessage getClientNames(ConcurrentHashMap<String, Socket> clientList) {
@@ -58,7 +59,7 @@ public class BServer5 {
             clientsStr.append(entity.getKey());
         }
 
-        ChatMessage retMeg = new ChatMessage(ChatMessage.USERNAME,clientsStr.toString());
+        ChatMessage retMeg = new ChatMessage(1,clientsStr.toString());
        return retMeg;
     }
 }

@@ -27,10 +27,10 @@ public class CThread5 extends Thread {
                 ChatMessage reObj = (ChatMessage)inFromServer.readObject();
                 editedData = reObj.getMessage();
 
-                if(reObj.getType()==ChatMessage.MESSAGE) {
+                if(reObj.getType()==0) {
                     System.out.println(editedData);
                     chatRoom.updateChat(editedData);
-                }else if(reObj.getType()==ChatMessage.USERNAME){
+                }else if(reObj.getType()==1){
 
                     List<String>   clientList = getClientsList(reObj);
 
