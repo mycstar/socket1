@@ -3,7 +3,6 @@ package se211.v5;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -14,6 +13,9 @@ public class BServer5 {
         ServerSocket serverS = new ServerSocket(6789);
         System.out.println("server is running...");
         ConcurrentHashMap<String, Socket> clientList = new ConcurrentHashMap<>();
+        ConcurrentHashMap<String, ObjectOutputStream> clientOutputList = new ConcurrentHashMap<>();
+        ConcurrentHashMap<String, ObjectInputStream> clientInputList = new ConcurrentHashMap<>();
+
 
         int connNum = 0;
         while (true) {
@@ -22,7 +24,7 @@ public class BServer5 {
             //clientList.put(String.valueOf(connSocket.getPort()), connSocket);
 
             ObjectInputStream in = new ObjectInputStream(connSocket.getInputStream());
-            //ObjectOutputStream out = new ObjectOutputStream(connSocket.getOutputStream());
+            ObjectOutputStream out = new ObjectOutputStream(connSocket.getOutputStream());
 
             ChatMessage clientMeg = (ChatMessage) in.readObject();
             String clientName = clientMeg.getSender();
@@ -30,24 +32,28 @@ public class BServer5 {
 
             // add new client to HashMap
             clientList.put(clientName, connSocket);
+            clientInputList.put(clientName, in);
+            clientOutputList.put(clientName, out);
 
             // reminder all connected clients
             ChatMessage clientNameMeg = getClientNames(clientList);
             clientNameMeg.setSender("Server");
-            sendToAll(clientList,clientNameMeg);
+            sendToAll(clientOutputList,clientNameMeg);
 
-            SThread5 a = new SThread5(clientName, connSocket, clientList);
+            SThread5 a = new SThread5(clientName, connSocket, clientList, in, clientOutputList);
             a.start();
             connNum++;
             System.out.println("Total client number: " + connNum);
         }
     }
 
-    private static void sendToAll(ConcurrentHashMap<String, Socket> clientList, ChatMessage meg) throws IOException {
-        for (Map.Entry<String, Socket> entity : clientList.entrySet()) {
+    private static void sendToAll(ConcurrentHashMap<String, ObjectOutputStream> clientList, ChatMessage meg) throws IOException {
+        for (Map.Entry<String, ObjectOutputStream> entity : clientList.entrySet()) {
 
             String clientName = entity.getKey();
-            ObjectOutputStream individualClient = new ObjectOutputStream(entity.getValue().getOutputStream());
+            System.out.println("send reminder of new client:"+ meg.getMessage());
+            ObjectOutputStream individualClient = entity.getValue();
+
             individualClient.writeObject(meg);
             //individualClient.flush();
         }

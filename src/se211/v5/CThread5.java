@@ -1,8 +1,8 @@
 package se211.v5;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.SocketException;
 import java.util.ArrayList;
@@ -23,7 +23,6 @@ public class CThread5 extends Thread {
     public void run() {
         try {
             while(!connSocket.isClosed()) {
-                 inFromServer = new ObjectInputStream(connSocket.getInputStream());
                 String editedData = null;
 
                 ChatMessage reObj = (ChatMessage)inFromServer.readObject();
