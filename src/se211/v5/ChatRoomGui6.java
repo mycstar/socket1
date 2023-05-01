@@ -23,6 +23,7 @@ public class ChatRoomGui6 extends JFrame implements ActionListener {
     private static String clientName;
 
     static ObjectOutputStream outToServer;
+    static ObjectInputStream inFromServer;
 
     public ChatRoomGui6() {
         setTitle("Chat Room");
@@ -166,13 +167,13 @@ public class ChatRoomGui6 extends JFrame implements ActionListener {
 
         outToServer.writeObject(meg);
 
-        ObjectInputStream inFromServer = new ObjectInputStream(clientSocket.getInputStream());
+         inFromServer = new ObjectInputStream(clientSocket.getInputStream());
         List<String> clientList = getClientsList(inFromServer);
         updateClients(clientList);
 
         boolean endChat = false;
 
-        CThread5 cthread = new CThread5(clientSocket, chatRoom);
+        CThread5 cthread = new CThread5(clientSocket, chatRoom, inFromServer);
         cthread.start();
 
 //        while (!endChat) {
