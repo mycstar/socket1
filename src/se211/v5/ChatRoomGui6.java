@@ -173,7 +173,7 @@ public class ChatRoomGui6 extends JFrame implements ActionListener {
 
         boolean endChat = false;
 
-        CThread5 cthread = new CThread5(clientSocket, chatRoom, inFromServer, outToServer);
+        CThread5 cthread = new CThread5(clientSocket, chatRoom, inFromServer);
         cthread.start();
 
 //        while (!endChat) {
