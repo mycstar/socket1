@@ -89,7 +89,7 @@ public class ChatRoomGui6 extends JFrame implements ActionListener {
     public void actionPerformed(ActionEvent event) {
         if (event.getSource() == sendButton) {
             String message = messageField.getText();
-            chatArea.append("You: " + message + "\n");
+            //chatArea.append("You: " + message + "\n");
             messageField.setText("");
             sendToSever(message);
         }
